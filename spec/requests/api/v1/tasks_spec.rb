@@ -11,6 +11,48 @@ RSpec.describe Task, type: :request do
       get "/api/v1/tasks"
       expect(response).to be_successful
     end
+
+    context "with pagination" do
+      before { create_list(:task, 20, :with_user) }
+
+      it "adds meta data to response" do
+        get "/api/v1/tasks"
+        json = JSON.parse(response.body)
+        expect(json["meta"].to_h.with_indifferent_access).to eq({
+          "current" => 1, "next_page" => 2, "prev_page" => nil, "total" => 20, "pages" => 2
+        })
+      end
+
+      it "returns paginated response" do
+        get "/api/v1/tasks?page=2"
+
+        json = JSON.parse(response.body)
+        expect(json["meta"].to_h.with_indifferent_access).to eq({
+          "current" => 2, "next_page" => nil, "prev_page" => 1, "total" => 20, "pages" => 2
+        })
+      end
+    end
+
+    context "with query" do
+      let!(:task_1) { create(:task, :with_user, title: "Hello World!") }
+      let!(:task_2) { create(:task, :with_user, description: "hello Ruby on Rails!") }
+
+      context "WITHOUT match search term" do
+        it "adds meta data to response" do
+          get "/api/v1/tasks?query=goodbye"
+          json = JSON.parse(response.body)
+          expect(json["data"].size).to eq(0)
+        end
+      end
+
+      context "with matching search term" do
+        it "adds meta data to response" do
+          get "/api/v1/tasks?query=hello"
+          json = JSON.parse(response.body)
+          expect(json["data"].size).to eq(2)
+        end
+      end
+    end
   end
 
   describe "GET /api/v1/tasks/:id" do

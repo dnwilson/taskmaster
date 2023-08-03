@@ -35,4 +35,22 @@ RSpec.describe Task, type: :model do
       it { expect(task.status).to eq("completed") }
     end
   end
+
+  describe ".search" do
+    let!(:task_1) { create(:task, :with_user, title: "Hello World!") }
+    let!(:task_2) { create(:task, :with_user, description: "hello Ruby on Rails!") }
+    let(:search) { Task.search(term) }
+    
+    context "with matching term" do
+      let(:term) { "Hello" }
+      
+      it { expect(search).to eq([task_1, task_2]) }
+    end
+    
+    context "with NO matching term" do
+      let(:term) { "goodbye" }
+      
+      it { expect(search).to eq([]) }
+    end
+  end
 end
