@@ -6,7 +6,7 @@ class CreateTasks < ActiveRecord::Migration[7.0]
       t.text :description
       t.datetime :due_date
       t.datetime :completed_at
-      t.string :priority, default: Task.priorities[:low]
+      t.string :priority, default: "low"
 
       t.timestamps
     end
