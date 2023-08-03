@@ -7,6 +7,7 @@ Taskmaster allows users to create, update and delete tasks. Tasks can be grouped
 ```
   bundle install
   bin/rails db:setup
+  bin/rails db:migrate
   bin/rails db:seed
 ```
 

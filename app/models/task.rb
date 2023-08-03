@@ -1,7 +1,11 @@
 class Task < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, optional: true
+
   enum priorities: {low: "low", medium: "medium", high: "high"}
   validates :title, presence: true, length: {maximum: 100}
+
+  scope :incomplete, -> { where(completed_at: nil) }
+  scope :completed, -> { where.not(completed_at: nil) }
 
   class << self
     def search(term)

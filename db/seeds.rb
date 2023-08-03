@@ -5,3 +5,15 @@
 #
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
+
+Task.destroy_all
+User.destroy_all
+
+FactoryBot.create_list(:user, 10)
+1000.times do
+  FactoryBot.create(:task,
+    user_id: [User.pluck(:id).sample, nil].sample,
+    completed_at: [Time.current, nil].sample
+  )
+end
+
