@@ -108,9 +108,10 @@ RSpec.describe Task, type: :request do
 
   describe "PATCH /api/v1/tasks/:id" do
     let(:task) { create(:task, :with_user, completed_at: nil) }
-    let(:updated_attributes) { { completed_at: Time.current } }
 
     context "with valid attributes" do
+      let(:updated_attributes) { { completed_at: Time.current } }
+
       it "update the task" do
         patch "/api/v1/tasks/#{task.id}", params: { task: updated_attributes }, as: :json
         expect(task.reload.status).to eq("completed")
@@ -118,10 +119,11 @@ RSpec.describe Task, type: :request do
     end
 
     context "with invalid attributes" do
-      let(:updated_attributes) { { user_id: nil } }
+      let(:updated_attributes) { { title: nil } }
 
       it "returns an error" do
         patch "/api/v1/tasks/#{task.id}", params: { task: updated_attributes }, as: :json
+
         expect(response).to be_unprocessable
       end
     end
